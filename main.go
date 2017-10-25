@@ -25,7 +25,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/movies", handleMovies).Methods("GET")
 	router.HandleFunc("/movie/{imdbKey}", handleMovie).Methods("GET", "DELETE", "POST")
-	http.ListenAndServe("https://whispering-ridge-24474.herokuapp.com", router)
+	//http.ListenAndServe(":8080", router)
 }
 
 func handleMovie(res http.ResponseWriter, req *http.Request) {
