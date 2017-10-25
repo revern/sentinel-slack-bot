@@ -6,13 +6,20 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"strconv"
+	"os"
 )
 
 func main() {
-
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/hello/{name}", index).Methods("GET")
-	log.Fatal(http.ListenAndServe(":1", router))
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if (err == nil) {
+		log.Println("bad port")
+	} else {
+		stringPort := strconv.Itoa(port)
+		router := mux.NewRouter().StrictSlash(true)
+		router.HandleFunc("/hello/{name}", index).Methods("GET")
+		http.ListenAndServe(":"+stringPort, router)
+	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
