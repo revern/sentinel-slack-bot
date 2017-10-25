@@ -4,13 +4,14 @@
 	"GodepVersion": "v79",
 	"Deps": [
 		{
-			"ImportPath": "github.com/gorilla/mux",
-			"Comment": "v1.5.0-6-g7625a85",
-			"Rev": "7625a85c14e615274a4ee4bc8654f72310a563e4"
+			"ImportPath": "github.com/codegangsta/inject",
+			"Comment": "v1.0-rc1-10-g33e0aa1",
+			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
 		},
 		{
-			"ImportPath": "github.com/gorilla/schema",
-			"Rev": "8b1100835db5bbdae88541510f70d114b91a7e4d"
+			"ImportPath": "github.com/go-martini/martini",
+			"Comment": "v1.0-188-g22fa469",
+			"Rev": "22fa46961aabd2665cf3f1343b146d20028f5071"
 		}
 	]
 }
