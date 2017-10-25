@@ -12,7 +12,7 @@ import (
 
 func main() {
 	port, err := strconv.Atoi(os.Getenv("PORT"))
-	if (err == nil) {
+	if (err != nil) {
 		log.Println("bad port")
 	} else {
 		stringPort := strconv.Itoa(port)
