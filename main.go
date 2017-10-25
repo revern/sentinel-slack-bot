@@ -73,7 +73,6 @@ func handleMovie(res http.ResponseWriter, req *http.Request) {
 }
 
 func hello(res http.ResponseWriter, req *http.Request) {
-	log.Println("hello here")
 	res.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 
 	err := req.ParseForm()
