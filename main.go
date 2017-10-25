@@ -1,4 +1,4 @@
-package main
+package go_getting_started
 
 import (
 "encoding/json"
