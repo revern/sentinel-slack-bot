@@ -12,7 +12,7 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/hello/{name}", index).Methods("GET")
-	log.Fatal(http.ListenAndServe(":web.1", router))
+	log.Fatal(http.ListenAndServe(":1", router))
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
