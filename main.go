@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"os"
 	"github.com/gorilla/schema"
+	"time"
 )
 
 // Movie Struct
@@ -54,9 +55,21 @@ func main() {
 		router := mux.NewRouter()
 		router.HandleFunc("/movies", handleMovies).Methods("GET")
 		router.HandleFunc("/movie/{imdbKey}", handleMovie).Methods("GET", "DELETE", "POST")
+		router.HandleFunc("/ping", handlePing).Methods("GET")
 		router.HandleFunc("/take", handleTake).Methods("POST")
 		http.ListenAndServe(":"+stringPort, router)
+
+		pingSelf()
 	}
+}
+
+func handlePing(res http.ResponseWriter, req *http.Request) {
+	time.Sleep(2 * time.Minute)
+	pingSelf()
+}
+
+func pingSelf() {
+	http.Get("https://whispering-ridge-24474.herokuapp.com/ping")
 }
 
 func handleTake(res http.ResponseWriter, req *http.Request) {
