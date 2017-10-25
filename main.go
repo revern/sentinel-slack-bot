@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"strconv"
 	"os"
+	"github.com/gorilla/schema"
 )
 
 // Movie Struct
@@ -23,6 +24,27 @@ var movies = map[string]*Movie{
 	"tt0082971": &Movie{Title: "Indiana Jones: Raiders of the Lost Ark", Rating: "8.6", Year: "1981"},
 }
 
+type Device struct {
+	Name     string
+	Location string
+}
+
+type SlackMessage struct {
+	token           string
+	team_id         string
+	team_domain     string
+	enterprise_id   string
+	enterprise_name string
+	channel_id      string
+	channel_name    string
+	user_id         string
+	user_name       string
+	command         string
+	text            string
+	response_url    string
+	trigger_id      string
+}
+
 func main() {
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if (err != nil) {
@@ -32,8 +54,28 @@ func main() {
 		router := mux.NewRouter()
 		router.HandleFunc("/movies", handleMovies).Methods("GET")
 		router.HandleFunc("/movie/{imdbKey}", handleMovie).Methods("GET", "DELETE", "POST")
+		router.HandleFunc("/take", handleTake).Methods("POST")
 		http.ListenAndServe(":"+stringPort, router)
 	}
+}
+
+func handleTake(res http.ResponseWriter, req *http.Request) {
+	err := req.ParseForm()
+
+	if err != nil {
+		fmt.Println("Error parsing form")
+	}
+
+	msg := new(SlackMessage)
+	decoder := schema.NewDecoder()
+
+	err = decoder.Decode(msg, req.Form)
+
+	if err != nil {
+		fmt.Println("Error decoding")
+	}
+
+	fmt.Fprint(res, msg.text + " fu")
 }
 
 func handleMovie(res http.ResponseWriter, req *http.Request) {
