@@ -30,19 +30,19 @@ type Device struct {
 }
 
 type SlackMessage struct {
-	token           string
-	team_id         string
-	team_domain     string
-	enterprise_id   string
-	enterprise_name string
-	channel_id      string
-	channel_name    string
-	user_id         string
-	user_name       string
-	command         string
-	text            string
-	response_url    string
-	trigger_id      string
+	Token          string `schema:"token"`
+	TeamId         string `schema:"team_id"`
+	TeamDomain     string `schema:"team_domain"`
+	EnterpriseId   string `schema:"enterprise_id"`
+	EnterpriseName string `schema:"enterprise_name"`
+	ChannelId      string `schema:"channel_id"`
+	ChannelName    string `schema:"channel_name"`
+	UserId         string `schema:"user_id"`
+	UserName       string `schema:"user_name"`
+	Command        string `schema:"command"`
+	Text           string `schema:"text"`
+	ResponseUrl    string `schema:"response_url"`
+	TriggerId      string `schema:"trigger_id"`
 }
 
 func main() {
@@ -75,7 +75,7 @@ func handleTake(res http.ResponseWriter, req *http.Request) {
 		fmt.Println("Error decoding")
 	}
 
-	fmt.Fprint(res, msg.text + " fu")
+	fmt.Fprint(res, msg.Text+" fu")
 }
 
 func handleMovie(res http.ResponseWriter, req *http.Request) {
