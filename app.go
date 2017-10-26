@@ -11,7 +11,6 @@ import (
 	"time"
 	"fmt"
 	"github.com/gorilla/schema"
-	"github.com/lib/pq"
 )
 
 type App struct {
@@ -19,14 +18,16 @@ type App struct {
 	DB     *sql.DB
 }
 
-func (a *App) Initialize(dbUrl string) {
-	//connectionString :=
-	//	fmt.Sprintf("user=%s password=%s dbname=%s", user, password, dbname)
+func (a *App) Initialize(
+	//dbUrl string
+	user, password, dbname string) {
+	connectionString :=
+		fmt.Sprintf("user=%s password=%s dbname=%s", user, password, dbname)
 
-	connection, _ := pq.ParseURL(dbUrl)
-	connection += " sslmode=require"
+	//connection, _ := pq.ParseURL(dbUrl)
+	//connection += " sslmode=require"
 	var err error
-	a.DB, err = sql.Open("postgres", connection)
+	a.DB, err = sql.Open("postgres", connectionString)
 	if err != nil {
 		log.Fatal(err)
 	}

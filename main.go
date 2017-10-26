@@ -11,7 +11,12 @@ func main() {
 		log.Println("bad port")
 	}
 	a := App{}
-	a.Initialize(os.Getenv("DATABASE_URL"))
+	a.Initialize(os.Getenv(
+
+		os.Getenv("APP_DB_USERNAME"),
+		os.Getenv("APP_DB_PASSWORD"),
+		os.Getenv("APP_DB_NAME")))
+		//"DATABASE_URL"))
 	a.Run(port)
 }
 
