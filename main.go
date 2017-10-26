@@ -11,6 +11,8 @@ import (
 	"os"
 	"github.com/gorilla/schema"
 	"time"
+	_ "github.com/lib/pq"
+	"database/sql"
 )
 
 // Movie Struct
@@ -47,6 +49,15 @@ type SlackMessage struct {
 }
 
 func main() {
+	//db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//_, err = db.Exec("CREATE TABLE IF NOT EXISTS " +
+	//	`device("name" PRIMARY KEY,` +
+	//	`"location" varchar(50))`)
+
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if (err != nil) {
 		log.Println("bad port")
@@ -57,7 +68,7 @@ func main() {
 		router.HandleFunc("/movie/{imdbKey}", handleMovie).Methods("GET", "DELETE", "POST")
 		router.HandleFunc("/ping", handlePing).Methods("GET")
 		router.HandleFunc("/take", handleTake).Methods("POST")
-		http.ListenAndServe(":"+stringPort, router)
+		http.ListenAndServe(":" + stringPort, router)
 
 		pingSelf()
 	}

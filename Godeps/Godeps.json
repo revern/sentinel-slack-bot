@@ -11,6 +11,16 @@
 		{
 			"ImportPath": "github.com/gorilla/schema",
 			"Rev": "8b1100835db5bbdae88541510f70d114b91a7e4d"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "go1.0-cutoff-191-gb609790",
+			"Rev": "b609790bd85edf8e9ab7e0f8912750a786177bcf"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/oid",
+			"Comment": "go1.0-cutoff-191-gb609790",
+			"Rev": "b609790bd85edf8e9ab7e0f8912750a786177bcf"
 		}
 	]
 }
