@@ -28,6 +28,10 @@ func (a *App) Initialize(dbUrl string) {
 		log.Fatal(err)
 	}
 
+	_, err = a.DB.Exec("CREATE TABLE IF NOT EXISTS " +
+			`device("name" PRIMARY KEY,` +
+			`"location" varchar(50) DEFAULT box)`)
+
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
 }
@@ -46,12 +50,12 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
-	products, err := getDevices(a.DB)
+	devices, err := getDevices(a.DB)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJSON(w, http.StatusOK, products)
+	respondWithJSON(w, http.StatusOK, devices)
 }
 
 
@@ -71,16 +75,16 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error decoding")
 	}
 
-	d := device{Name: msg.Text}
-	if err := d.updateDevice(a.DB); err != nil {
-		switch err {
-		case sql.ErrNoRows:
-			respondWithError(w, http.StatusNotFound, "Device not found")
-		default:
-			respondWithError(w, http.StatusInternalServerError, err.Error())
-		}
-		return
-	}
+	//d := device{Name: msg.Text}
+	//if err := d.updateDevice(a.DB); err != nil {
+	//	switch err {
+	//	case sql.ErrNoRows:
+	//		respondWithError(w, http.StatusNotFound, "Device not found")
+	//	default:
+	//		respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	}
+	//	return
+	//}
 
 	fmt.Fprint(w, msg.UserName + " take " + msg.Text)
 

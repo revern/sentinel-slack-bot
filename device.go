@@ -34,7 +34,7 @@ func (d *device) createDevice(db *sql.DB) error {
 
 func (d *device) updateDevice(db *sql.DB) error {
 	_, err :=
-		db.Exec("UPDATE products SET name=$1, location=$2 WHERE name=$1",
+		db.Exec("UPDATE devices SET name=$1, location=$2 WHERE name=$1",
 			d.Name, d.Location)
 
 	return err
