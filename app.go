@@ -18,16 +18,14 @@ type App struct {
 	DB     *sql.DB
 }
 
-func (a *App) Initialize(
-	//dbUrl string
-	user, password, dbname string) {
-	connectionString :=
-		fmt.Sprintf("user=%s password=%s dbname=%s", user, password, dbname)
+func (a *App) Initialize(dbUrl string) {
+	//connectionString :=
+	//	fmt.Sprintf("user=%s password=%s dbname=%s", user, password, dbname)
 
 	//connection, _ := pq.ParseURL(dbUrl)
 	//connection += " sslmode=require"
 	var err error
-	a.DB, err = sql.Open("postgres", connectionString)
+	a.DB, err = sql.Open("postgres", dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
