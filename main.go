@@ -11,8 +11,8 @@ import (
 	"os"
 	"github.com/gorilla/schema"
 	"time"
-	_ "github.com/lib/pq"
-	"database/sql"
+	//_ "github.com/lib/pq"
+	//"database/sql"
 )
 
 // Movie Struct
