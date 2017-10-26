@@ -30,7 +30,7 @@ func (a *App) Initialize(dbUrl string) {
 
 	_, err = a.DB.Exec("CREATE TABLE IF NOT EXISTS " +
 		`device("name" PRIMARY KEY,` +
-		`"location" varchar(50) DEFAULT box)`)
+		`"location" varchar(50))`)
 
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()

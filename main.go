@@ -2,19 +2,17 @@ package main
 
 import (
 	"log"
-	"strconv"
 	"os"
 )
 
 func main() {
-	port, err := strconv.Atoi(os.Getenv("PORT"))
-	if err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
 		log.Println("bad port")
 	}
-	portStr := strconv.Itoa(port)
 	a := App{}
 	a.Initialize(os.Getenv("DATABASE_URL"))
-	a.Run(portStr)
+	a.Run(port)
 }
 
 //func main() {
