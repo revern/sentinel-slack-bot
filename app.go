@@ -11,6 +11,7 @@ import (
 	"time"
 	"fmt"
 	"github.com/gorilla/schema"
+	"net/url"
 )
 
 type App struct {
@@ -50,6 +51,33 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
 	a.Router.HandleFunc("/info", a.handleInfo).Methods("POST")
+	a.Router.HandleFunc("/users", a.getUsers).Methods("POST")
+}
+
+func (a *App) getUsers(w http.ResponseWriter, r *http.Request) {
+	oauthSlackToken := "xoxp-187252810612-187260552692-264113658087-e0f8a13ebb0b45c6d4d0686b1513e468"
+	slackApi := "https://slack.com/api"
+
+	resp, err := http.PostForm(slackApi+"/users.list",
+	url.Values{"key": {"Value"}, "token": {oauthSlackToken}})
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "invalid token")
+	} else {
+		var respUsers slack_users_response
+		decoder := json.NewDecoder(resp.Body)
+		if err := decoder.Decode(&respUsers); err != nil {
+			respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+			return
+		}
+		defer r.Body.Close()
+		members := respUsers.Members
+		allUsers := ""
+		for i:= 0; i < len(members); i++ {
+			allUsers += members[i].Profile.RealName+"\n"
+		}
+		fmt.Fprint(w, allUsers)
+	}
 }
 
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
