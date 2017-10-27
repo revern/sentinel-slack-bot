@@ -75,17 +75,19 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error decoding")
 	}
-
-	d := device{Name: msg.Text}
-	if err := d.updateDevice(a.DB); err != nil {
-		switch err {
-		case sql.ErrNoRows:
-			respondWithError(w, http.StatusNotFound, "Device not found")
-		default:
-			respondWithError(w, http.StatusInternalServerError, err.Error())
-		}
-		return
-	}
+	_, err = a.DB.Exec("CREATE TABLE IF NOT EXISTS " +
+		`devices("name" PRIMARY KEY,` +
+		`"location" varchar(50) DEFAULT box)`)
+	//d := device{Name: msg.Text}
+	//if err := d.updateDevice(a.DB); err != nil {
+	//	switch err {
+	//	case sql.ErrNoRows:
+	//		respondWithError(w, http.StatusNotFound, "Device not found")
+	//	default:
+	//		respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	}
+	//	return
+	//}
 
 	fmt.Fprint(w, msg.UserName+" take "+msg.Text)
 
