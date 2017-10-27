@@ -49,6 +49,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/return", a.returnDevice).Methods("POST")
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
+	a.Router.HandleFunc("/info", a.handleInfo).Methods("POST")
 }
 
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
@@ -141,6 +142,16 @@ func (a *App) deleteDevice(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+func (a *App) handleInfo(w http.ResponseWriter, r *http.Request) {
+	info := "/devices-location - Show all devices location" +
+		"\n/add - Add new device to the collection" +
+		"\n/delete - Remove device from the collection" +
+		"\n/take - Take device" +
+		"\n/return - Return device" +
+		"\n/info - Show all bot commands"
+	fmt.Fprint(w, info)
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
