@@ -75,7 +75,7 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error decoding")
 	}
-	_, err = a.DB.Exec("CREATE TABLE IF NOT EXISTS " +
+	_, err = a.DB.Exec("CREATE TABLE " +
 		`devices("name" PRIMARY KEY,` +
 		`"location" varchar(50) DEFAULT box)`)
 	//d := device{Name: msg.Text}
@@ -89,7 +89,11 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	//	return
 	//}
 
-	fmt.Fprint(w, msg.UserName+" take "+msg.Text)
+	if(err == nil){
+		fmt.Fprint(w, msg.UserName+" take "+msg.Text)
+		} else {
+		fmt.Fprint(w, err.Error())
+	}
 
 	//respondWithJSON(w, http.StatusOK, d)
 }
