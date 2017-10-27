@@ -77,7 +77,7 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	}
 	_, err = a.DB.Exec("CREATE TABLE " +
 		`devices("name" varchar(50) PRIMARY KEY NOT NULL,` +
-		`"location" varchar(50) DEFAULT box);`)
+		`"location" varchar(50) NOT NULL);`)
 	//d := device{Name: msg.Text}
 	//if err := d.updateDevice(a.DB); err != nil {
 	//	switch err {
