@@ -57,24 +57,21 @@ func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJSON(w, http.StatusOK, devices)
+
+	devicesInfo := ""
+	for i := 0; i < len(devices); i++ {
+		devicesInfo += devices[i].Name + " location: " + devices[i].Location + "/n"
+	}
+
+	fmt.Fprint(w, devicesInfo)
 }
 
 func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-
-	if err != nil {
-		fmt.Println("Error parsing form")
-	}
-
-	msg := new(slack_message)
-	decoder := schema.NewDecoder()
-
-	err = decoder.Decode(msg, r.Form)
-
+	msg, err := getSlackMessage(r)
 	if err != nil {
 		fmt.Println("Error decoding")
 	}
+
 	d := device{Name: msg.Text, Location: msg.UserName}
 	if err := d.updateDevice(a.DB); err != nil {
 		switch err {
@@ -90,18 +87,8 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	//respondWithJSON(w, http.StatusOK, d)
 }
 
-//TODO rework
 func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		fmt.Println("Error parsing form")
-	}
-
-	msg := new(slack_message)
-	decoder := schema.NewDecoder()
-
-	err = decoder.Decode(msg, r.Form)
-
+	msg, err := getSlackMessage(r)
 	if err != nil {
 		fmt.Println("Error decoding")
 	}
@@ -123,16 +110,7 @@ func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) addDevice(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		fmt.Println("Error parsing form")
-	}
-
-	msg := new(slack_message)
-	decoder := schema.NewDecoder()
-
-	err = decoder.Decode(msg, r.Form)
-
+	msg, err := getSlackMessage(r)
 	if err != nil {
 		fmt.Println("Error decoding")
 	}
@@ -142,28 +120,27 @@ func (a *App) addDevice(w http.ResponseWriter, r *http.Request) {
 	if err := d.createDevice(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
+	} else {
+		fmt.Fprint(w, "New device < "+msg.Text+" > was added to collection")
 	}
-
-	fmt.Fprint(w, "New device < "+msg.Text+" > was added to collection")
-
 	//respondWithJSON(w, http.StatusCreated, d)
 }
 
 func (a *App) deleteDevice(w http.ResponseWriter, r *http.Request) {
-	//vars := mux.Vars(r)
-	//id, err := strconv.Atoi(vars["id"])
-	//if err != nil {
-	//	respondWithError(w, http.StatusBadRequest, "Invalid Product ID")
-	//	return
-	//}
+	msg, err := getSlackMessage(r)
+	if err != nil {
+		fmt.Println("Error decoding")
+	}
 
-	p := device{Name: "todo_remake"}
+	p := device{Name: msg.Text}
 	if err := p.deleteDevice(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
+	} else {
+		fmt.Fprint(w, "Device < "+msg.Text+" > was returned to Box")
 	}
 
-	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
@@ -185,4 +162,23 @@ func (a *App) handlePing(res http.ResponseWriter, req *http.Request) {
 
 func pingSelf() {
 	http.Get("https://whispering-ridge-24474.herokuapp.com/ping")
+}
+
+func getSlackMessage(r *http.Request) (*slack_message, error) {
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Println("Error parsing form")
+	}
+
+	msg := new(slack_message)
+	decoder := schema.NewDecoder()
+
+	err = decoder.Decode(msg, r.Form)
+
+	if err != nil {
+		fmt.Println("Error decoding")
+		return nil, err
+	} else {
+		return msg, nil
+	}
 }
