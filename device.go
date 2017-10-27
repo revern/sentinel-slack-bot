@@ -22,8 +22,8 @@ func (d *device) deleteDevice(db *sql.DB) error {
 
 func (d *device) createDevice(db *sql.DB) error {
 	err := db.QueryRow(
-		"INSERT INTO devices(name, location) VALUES($1, box) RETURNING name",
-		d.Name).Scan(&d.Name)
+		"INSERT INTO devices(name, location) VALUES($1, $2) RETURNING name",
+		d.Name, "box").Scan(&d.Name)
 
 	if err != nil {
 		return err
