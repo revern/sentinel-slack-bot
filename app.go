@@ -55,7 +55,7 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) getUsers(w http.ResponseWriter, r *http.Request) {
-	oauthSlackToken := "xoxp-187252810612-187260552692-264113658087-e0f8a13ebb0b45c6d4d0686b1513e468"
+	oauthSlackToken := "xoxp-187252810612-187260552692-263063413378-766c63535395fdd9c97624283da7ba3d"
 	slackApi := "https://slack.com/api"
 
 	resp, err := http.PostForm(slackApi+"/users.list",
