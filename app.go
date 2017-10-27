@@ -60,7 +60,7 @@ func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
 
 	devicesInfo := ""
 	for i := 0; i < len(devices); i++ {
-		devicesInfo += devices[i].Name + " location: " + devices[i].Location + "/n"
+		devicesInfo += devices[i].Name + " location: " + devices[i].Location + "\n"
 	}
 
 	fmt.Fprint(w, devicesInfo)
