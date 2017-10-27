@@ -46,7 +46,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/devices", a.getDevices).Methods("POST")
 	a.Router.HandleFunc("/add", a.addDevice).Methods("POST")
 	a.Router.HandleFunc("/take", a.takeDevice).Methods("POST")
-	a.Router.HandleFunc("/take", a.returnDevice).Methods("POST")
+	a.Router.HandleFunc("/return", a.returnDevice).Methods("POST")
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
 }
@@ -85,7 +85,7 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Fprint(w, msg.UserName+" take "+msg.Text)
+	fmt.Fprint(w, d.Location+" take "+d.Name)
 
 	//respondWithJSON(w, http.StatusOK, d)
 }
@@ -106,7 +106,7 @@ func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error decoding")
 	}
 
-	d := device{Name: msg.Text}
+	d := device{Name: msg.Text, Location: "box"}
 	if err := d.updateDevice(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
