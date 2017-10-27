@@ -31,7 +31,7 @@ func (a *App) Initialize(dbUrl string) {
 	}
 
 	_, err = a.DB.Exec("CREATE TABLE IF NOT EXISTS " +
-		`devices("name" varchar(50) PRIMARY KEY,` +
+		`devices("name" PRIMARY KEY,` +
 		`"location" varchar(50) DEFAULT box)`)
 
 	a.Router = mux.NewRouter()
@@ -75,16 +75,19 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error decoding")
 	}
-	d := device{Name: msg.Text}
-	if err := d.updateDevice(a.DB); err != nil {
-		switch err {
-		case sql.ErrNoRows:
-			respondWithError(w, http.StatusNotFound, "Device not found")
-		default:
-			respondWithError(w, http.StatusInternalServerError, err.Error())
-		}
-		return
-	}
+	_, err = a.DB.Exec("CREATE TABLE " +
+		`devices("name" varchar(50) PRIMARY KEY NOT NULL,` +
+		`"location" varchar(50) DEFAULT box);`)
+	//d := device{Name: msg.Text}
+	//if err := d.updateDevice(a.DB); err != nil {
+	//	switch err {
+	//	case sql.ErrNoRows:
+	//		respondWithError(w, http.StatusNotFound, "Device not found")
+	//	default:
+	//		respondWithError(w, http.StatusInternalServerError, err.Error())
+	//	}
+	//	return
+	//}
 
 	if(err == nil){
 		fmt.Fprint(w, msg.UserName+" take "+msg.Text)
