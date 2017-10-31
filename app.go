@@ -116,6 +116,9 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	text := d.Location+" take "+d.Name
 	jsonValue, _ := json.Marshal(text);
 	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))
+
+	fmt.Fprint(w, jsonValue)
+	//respondWithJSON(w, http.StatusOK, d)
 }
 
 func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
