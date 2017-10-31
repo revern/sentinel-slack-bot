@@ -47,7 +47,6 @@ func getDevices(db *sql.DB) ([]device, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	devices := []device{}
