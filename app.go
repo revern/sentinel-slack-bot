@@ -52,7 +52,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
 	a.Router.HandleFunc("/info", a.handleInfo).Methods("POST")
-	a.Router.HandleFunc("/info", a.createTable).Methods("POST")
+	a.Router.HandleFunc("/table", a.createTable).Methods("POST")
 
 }
 
