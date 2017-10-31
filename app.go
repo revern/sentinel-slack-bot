@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"github.com/gorilla/schema"
 	"net/url"
+	"bytes"
 )
 
 type App struct {
@@ -111,9 +112,10 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Fprint(w, d.Location+" take "+d.Name)
-
-	//respondWithJSON(w, http.StatusOK, d)
+	webhook_url := "https://hooks.slack.com/services/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"
+	text := d.Location+" take "+d.Name
+	jsonValue, _ := json.Marshal(text);
+	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))
 }
 
 func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
