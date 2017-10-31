@@ -186,7 +186,7 @@ func (a *App) handlePing(res http.ResponseWriter, req *http.Request) {
 }
 
 func pingSelf() {
-	http.Get("https://whispering-ridge-24474.herokuapp.com/ping")
+	http.Get("https://sentinel-slack-bot-api.herokuapp.com/ping")
 }
 
 func getSlackMessage(r *http.Request) (*slack_message, error) {
