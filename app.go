@@ -11,7 +11,6 @@ import (
 	"time"
 	"fmt"
 	"github.com/gorilla/schema"
-	"net/url"
 	"bytes"
 )
 
@@ -34,6 +33,7 @@ func (a *App) Initialize(dbUrl string) {
 
 	_, err = a.DB.Exec("CREATE TABLE IF NOT EXISTS" +
 		`devices("name" varchar(50) PRIMARY KEY NOT NULL,` +
+		`"location_id" varchar(50) NOT NULL,` +
 		`"location" varchar(50) NOT NULL);`)
 
 	a.Router = mux.NewRouter()
@@ -52,33 +52,6 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
 	a.Router.HandleFunc("/info", a.handleInfo).Methods("POST")
-	a.Router.HandleFunc("/users", a.getUsers).Methods("POST")
-}
-
-func (a *App) getUsers(w http.ResponseWriter, r *http.Request) {
-	oauthSlackToken := "xoxp-187252810612-187260552692-263063413378-766c63535395fdd9c97624283da7ba3d"
-	slackApi := "https://slack.com/api"
-
-	resp, err := http.PostForm(slackApi+"/users.list",
-	url.Values{"key": {"Value"}, "token": {oauthSlackToken}})
-
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "invalid token")
-	} else {
-		var respUsers slack_users_response
-		decoder := json.NewDecoder(resp.Body)
-		if err := decoder.Decode(&respUsers); err != nil {
-			respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-			return
-		}
-		defer r.Body.Close()
-		members := respUsers.Members
-		allUsers := ""
-		for i:= 0; i < len(members); i++ {
-			allUsers += members[i].Profile.RealName+"\n"
-		}
-		fmt.Fprint(w, allUsers)
-	}
 }
 
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +63,11 @@ func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
 
 	devicesInfo := ""
 	for i := 0; i < len(devices); i++ {
-		devicesInfo += devices[i].Name + " location: " + devices[i].Location + "\n"
+		if devices[i].Location == "box" {
+			devicesInfo += devices[i].Name + " location: box \n"
+		} else {
+			devicesInfo += devices[i].Name + " location: <@" + devices[i].Location + "> \n"
+		}
 	}
 
 	fmt.Fprint(w, devicesInfo)
@@ -102,7 +79,7 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error decoding")
 	}
 
-	d := device{Name: msg.Text, Location: msg.UserName}
+	d := device{Name: msg.Text, LocationID: msg.UserId, Location: msg.UserName}
 	if err := d.updateDevice(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
@@ -113,7 +90,7 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	webhook_url := "https://hooks.slack.com/services/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"
-	text := d.Location+" took "+d.Name
+	text := "<@" + d.LocationID + "> took " + d.Name
 	webhook_msg := webhook_message{Text: text}
 	jsonValue, _ := json.Marshal(webhook_msg);
 	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))
@@ -127,7 +104,7 @@ func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error decoding")
 	}
 
-	d := device{Name: msg.Text, Location: "box"}
+	d := device{Name: msg.Text, LocationID: "box", Location: "box"}
 	if err := d.updateDevice(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
@@ -139,7 +116,7 @@ func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
 	}
 
 	webhook_url := "https://hooks.slack.com/services/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"
-	text := "<@U339B3C4U> returned "+d.Name
+	text := "<@"+ msg.UserId +"> returned " + d.Name
 	webhook_msg := webhook_message{Text: text}
 	jsonValue, _ := json.Marshal(webhook_msg);
 	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))

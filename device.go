@@ -5,13 +5,14 @@ import (
 )
 
 type device struct {
-	Name     string `json:"name"`
-	Location string `json:"location"`
+	Name       string `json:"name"`
+	LocationID string `json:"location_id"`
+	Location   string `json:"location"`
 }
 
 func (d *device) getDevice(db *sql.DB) error {
 	return db.QueryRow("SELECT name, location FROM devices WHERE name=$1",
-		d.Name).Scan(&d.Name, &d.Location)
+		d.Name).Scan(&d.Name)
 }
 
 func (d *device) deleteDevice(db *sql.DB) error {
@@ -22,8 +23,8 @@ func (d *device) deleteDevice(db *sql.DB) error {
 
 func (d *device) createDevice(db *sql.DB) error {
 	err := db.QueryRow(
-		"INSERT INTO devices(name, location) VALUES($1, $2) RETURNING name",
-		d.Name, "box").Scan(&d.Name)
+		"INSERT INTO devices(name, location_id, location) VALUES($1, $2, $3) RETURNING name",
+		d.Name, "box", "box").Scan(&d.Name)
 
 	if err != nil {
 		return err
@@ -34,15 +35,15 @@ func (d *device) createDevice(db *sql.DB) error {
 
 func (d *device) updateDevice(db *sql.DB) error {
 	_, err :=
-		db.Exec("UPDATE devices SET name=$1, location=$2 WHERE name=$1",
-			d.Name, d.Location)
+		db.Exec("UPDATE devices SET name=$1, location_id=$2, location=$3 WHERE name=$1",
+			d.Name, d.LocationID, d.Location)
 
 	return err
 }
 
 func getDevices(db *sql.DB) ([]device, error) {
 	rows, err := db.Query(
-		"SELECT name, location FROM devices")
+		"SELECT name, location_id, location FROM devices")
 
 	if err != nil {
 		return nil, err
@@ -53,7 +54,7 @@ func getDevices(db *sql.DB) ([]device, error) {
 
 	for rows.Next() {
 		var d device
-		if err := rows.Scan(&d.Name, &d.Location); err != nil {
+		if err := rows.Scan(&d.Name, &d.LocationID, &d.Location); err != nil {
 			return nil, err
 		}
 		devices = append(devices, d)
