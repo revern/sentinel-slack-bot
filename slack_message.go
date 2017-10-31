@@ -36,3 +36,7 @@ type slack_profile struct {
 	Image192 string `json:"image_192"`
 	Image512 string `json:"image_512"`
 }
+
+type webhook_message struct {
+	Text string `json:"text"`
+}

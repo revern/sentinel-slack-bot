@@ -114,10 +114,10 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 	}
 	webhook_url := "https://hooks.slack.com/services/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"
 	text := d.Location+" take "+d.Name
-	jsonValue, _ := json.Marshal(text);
+	webhook_msg := webhook_message{Text: text}
+	jsonValue, _ := json.Marshal(webhook_msg);
 	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))
 
-	fmt.Fprint(w, jsonValue)
 	//respondWithJSON(w, http.StatusOK, d)
 }
 
