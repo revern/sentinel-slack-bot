@@ -52,8 +52,22 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
 	a.Router.HandleFunc("/info", a.handleInfo).Methods("POST")
+	a.Router.HandleFunc("/info", a.createTable).Methods("POST")
+
 }
 
+func (a *App) createTable(w http.ResponseWriter, r *http.Request) {
+	_, err := a.DB.Exec("CREATE TABLE IF NOT EXISTS" +
+		`devices("name" varchar(50) PRIMARY KEY NOT NULL,` +
+		`"location_id" varchar(50) NOT NULL,` +
+		`"location" varchar(50) NOT NULL);`)
+
+		if err != nil {
+			fmt.Fprint(w, err.Error())
+		} else {
+			fmt.Fprint(w, "good")
+		}
+}
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
 	devices, err := getDevices(a.DB)
 	if err != nil {
