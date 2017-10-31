@@ -181,6 +181,8 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 func (a *App) handlePing(res http.ResponseWriter, req *http.Request) {
+	res.WriteHeader(http.StatusOK)
+	fmt.Println("good")
 }
 
 func getSlackMessage(r *http.Request) (*slack_message, error) {
