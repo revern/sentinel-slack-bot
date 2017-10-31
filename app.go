@@ -181,12 +181,6 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 func (a *App) handlePing(res http.ResponseWriter, req *http.Request) {
-	time.Sleep(2 * time.Minute)
-	pingSelf()
-}
-
-func pingSelf() {
-	http.Get("https://sentinel-slack-bot-api.herokuapp.com/ping")
 }
 
 func getSlackMessage(r *http.Request) (*slack_message, error) {
