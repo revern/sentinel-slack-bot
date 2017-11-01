@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/gorilla/schema"
 	"bytes"
+	"github.com/robfig/cron"
 )
 
 type App struct {
@@ -34,6 +35,9 @@ func (a *App) Initialize(dbUrl string) {
 		`devices("name" varchar(50) PRIMARY KEY NOT NULL,` +
 		`"location_id" varchar(50) NOT NULL,` +
 		`"location" varchar(50) NOT NULL);`)
+
+	c := cron.New()
+	c.AddFunc("0 20 11 * * 0-4", func() { a.remindToReturnDevices() })
 
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
@@ -65,11 +69,26 @@ func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
 		if devices[i].Location == "box" {
 			devicesInfo += devices[i].Name + " location: box \n"
 		} else {
-			devicesInfo += devices[i].Name + " location: <@" + devices[i].Location + "> \n"
+			devicesInfo += devices[i].Name + " location: <@" + devices[i].LocationID + "> \n"
 		}
 	}
 
 	fmt.Fprint(w, devicesInfo)
+}
+
+func (a *App) remindToReturnDevices() {
+	devices, err := getDevices(a.DB)
+	if err != nil {
+		return
+	}
+
+	slack_msg := ""
+	for i := 0; i < len(devices); i++ {
+		if devices[i].Location != "box" {
+			slack_msg +=  "<@" + devices[i].LocationID + "> please don't forget return < "+ devices[i].Name+ " > to the box\n"
+		}
+	}
+	postSlackMessage(slack_msg)
 }
 
 func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
@@ -88,12 +107,8 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	webhook_url := "https://hooks.slack.com/services/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"
-	text := "<@" + d.LocationID + "> took " + d.Name
-	webhook_msg := webhook_message{Text: text}
-	jsonValue, _ := json.Marshal(webhook_msg);
-	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))
 
+	postSlackMessage("<@" + d.LocationID + "> took " + d.Name)
 	//respondWithJSON(w, http.StatusOK, d)
 }
 
@@ -113,12 +128,7 @@ func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
-	webhook_url := "https://hooks.slack.com/services/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"
-	text := "<@"+ msg.UserId +"> returned " + d.Name
-	webhook_msg := webhook_message{Text: text}
-	jsonValue, _ := json.Marshal(webhook_msg);
-	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))
+	postSlackMessage("<@"+ msg.UserId +"> returned " + d.Name)
 
 	//respondWithJSON(w, http.StatusOK, d)
 }
@@ -201,4 +211,11 @@ func getSlackMessage(r *http.Request) (*slack_message, error) {
 	} else {
 		return msg, nil
 	}
+}
+
+func postSlackMessage(message string) {
+	webhook_url := "https://hooks.slack.com/services/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"
+	webhook_msg := webhook_message{Text: message}
+	jsonValue, _ := json.Marshal(webhook_msg);
+	http.Post(webhook_url, "application/json", bytes.NewBuffer(jsonValue))
 }
