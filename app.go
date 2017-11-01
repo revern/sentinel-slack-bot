@@ -8,7 +8,6 @@ import (
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
-	"time"
 	"fmt"
 	"github.com/gorilla/schema"
 	"bytes"
