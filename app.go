@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/schema"
 	"bytes"
 	"github.com/robfig/cron"
+	"time"
 )
 
 type App struct {
@@ -55,6 +56,12 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
 	a.Router.HandleFunc("/info", a.handleInfo).Methods("POST")
+	a.Router.HandleFunc("/time", a.getTime).Methods("GET")
+}
+
+func (a *App) getTime(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, string(time.Now().Hour()) + " : " + string(time.Now().Minute()))
 }
 
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
