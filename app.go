@@ -37,7 +37,7 @@ func (a *App) Initialize(dbUrl string) {
 		`"location" varchar(50) NOT NULL);`)
 
 	c := cron.New()
-	c.AddFunc("0 35 11 * * 0-4", func() { a.remindToReturnDevices() })
+	c.AddFunc("0 15 3 * * *", func() { a.remindToReturnDevices() })
 
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
