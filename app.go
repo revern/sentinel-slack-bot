@@ -14,6 +14,7 @@ import (
 	"github.com/robfig/cron"
 	"time"
 	"strconv"
+	"net/url"
 )
 
 type App struct {
@@ -59,7 +60,19 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/remove", a.deleteDevice).Methods("POST")
 	a.Router.HandleFunc("/ping", a.handlePing).Methods("GET")
 	a.Router.HandleFunc("/info", a.handleInfo).Methods("POST")
+	a.Router.HandleFunc("/call", a.handleCall).Methods("POST")
 	a.Router.HandleFunc("/time", a.getTime).Methods("GET")
+}
+
+func (a *App) handleCall(w http.ResponseWriter, r *http.Request) {
+	msg, err := getSlackMessage(r)
+	if err != nil {
+		fmt.Println("Error decoding")
+	}
+	apiUrl := "https://sentinel-api.herokuapp.com/api/v1/devices/call"
+	http.PostForm(apiUrl, url.Values{"uid": {msg.Text}, "display_name": {msg.UserName}})
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "trying to call device with id "+msg.Text)
 }
 
 func (a *App) getTime(w http.ResponseWriter, r *http.Request) {
@@ -155,7 +168,7 @@ func (a *App) addDevice(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	} else {
-		postSlackMessage("New device < "+msg.Text+" > was added to collection")
+		postSlackMessage("New device < " + msg.Text + " > was added to collection")
 	}
 	//respondWithJSON(w, http.StatusCreated, d)
 }
@@ -171,7 +184,7 @@ func (a *App) deleteDevice(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	} else {
-		postSlackMessage("Device < "+msg.Text+" > was returned to Box")
+		postSlackMessage("Device < " + msg.Text + " > was returned to Box")
 	}
 
 	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
@@ -183,6 +196,7 @@ func (a *App) handleInfo(w http.ResponseWriter, r *http.Request) {
 		"\n/delete - Remove device from the collection" +
 		"\n/take - Take device" +
 		"\n/return - Return device" +
+		"\n/call - Call iOS device by item ID (numbers on sticker on device)" +
 		"\n/info - Show all bot commands"
 	fmt.Fprint(w, info)
 }

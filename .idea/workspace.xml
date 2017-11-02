@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="adfb47b8-6e49-45cd-8bfa-ac10085f92e1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/app.go" afterPath="$PROJECT_DIR$/app.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -85,10 +84,10 @@
       <file leaf-file-name="app.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="169" column="48" lean-forward="true" selection-start-line="169" selection-start-column="48" selection-end-line="169" selection-end-column="48" />
+            <state relative-caret-position="350">
+              <caret line="82" column="33" lean-forward="false" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
               <folding>
-                <element signature="e#14#216#0" expanded="true" />
+                <element signature="e#14#227#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -107,8 +106,8 @@
       <file leaf-file-name="client.go" pinned="false" current-in-tab="false">
         <entry file="file://C:/Go/src/net/http/client.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11798">
-              <caret line="707" column="5" lean-forward="false" selection-start-line="707" selection-start-column="5" selection-end-line="707" selection-end-column="5" />
+            <state relative-caret-position="193">
+              <caret line="745" column="33" lean-forward="false" selection-start-line="745" selection-start-column="33" selection-end-line="745" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -136,11 +135,11 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>device</find>
-      <find>take</find>
       <find>prod</find>
       <find>var</find>
       <find>slackap</find>
       <find>pin</find>
+      <find>take</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="C:\Go" />
@@ -343,7 +342,7 @@
         <state relative-caret-position="459">
           <caret line="39" column="0" lean-forward="true" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
           <folding>
-            <element signature="e#14#216#0" expanded="true" />
+            <element signature="e#14#227#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -394,7 +393,7 @@
         <state relative-caret-position="748">
           <caret line="56" column="44" lean-forward="false" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
           <folding>
-            <element signature="e#14#216#0" expanded="true" />
+            <element signature="e#14#227#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -491,7 +490,7 @@
         <state relative-caret-position="867">
           <caret line="62" column="81" lean-forward="false" selection-start-line="62" selection-start-column="81" selection-end-line="62" selection-end-column="81" />
           <folding>
-            <element signature="e#14#216#0" expanded="true" />
+            <element signature="e#14#227#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -507,14 +506,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2516">
           <caret line="148" column="39" lean-forward="false" selection-start-line="147" selection-start-column="21" selection-end-line="148" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Go/src/net/http/client.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11798">
-          <caret line="707" column="5" lean-forward="false" selection-start-line="707" selection-start-column="5" selection-end-line="707" selection-end-column="5" />
           <folding />
         </state>
       </provider>
@@ -598,12 +589,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Go/src/net/http/client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="745" column="33" lean-forward="false" selection-start-line="745" selection-start-column="33" selection-end-line="745" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="169" column="48" lean-forward="true" selection-start-line="169" selection-start-column="48" selection-end-line="169" selection-end-column="48" />
+        <state relative-caret-position="350">
+          <caret line="82" column="33" lean-forward="false" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
           <folding>
-            <element signature="e#14#216#0" expanded="true" />
+            <element signature="e#14#227#0" expanded="true" />
           </folding>
         </state>
       </provider>
