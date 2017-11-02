@@ -40,3 +40,8 @@ type slack_profile struct {
 type webhook_message struct {
 	Text string `json:"text"`
 }
+
+type user struct {
+	UID string `json:"uid"`
+	Name string `json:"name"`
+}

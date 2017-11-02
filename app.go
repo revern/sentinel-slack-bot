@@ -69,8 +69,38 @@ func (a *App) handleCall(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error decoding")
 	}
+
+	resp, err := http.PostForm("https://sentinel-api.herokuapp.com/api/v1/users",
+		url.Values{})
+
+	var users []user
+	if err != nil {
+		//respondWithError(w, http.StatusBadRequest, "invalid token")
+	} else {
+		decoder := json.NewDecoder(resp.Body)
+		if err := decoder.Decode(&users); err != nil {
+			//respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+			return
+		}
+		defer r.Body.Close()
+
+	}
+
+	displayName := ""
+	if users != nil {
+		for i := 0; i < len(users); i++ {
+			if users[i].UID == msg.UserId {
+				displayName = users[i].Name
+				break
+			}
+		}
+	}
+	if displayName == "" {
+		displayName = msg.UserName
+	}
+
 	apiUrl := "https://sentinel-api.herokuapp.com/api/v1/devices/call"
-	http.PostForm(apiUrl, url.Values{"uid": {msg.Text}, "display_name": {msg.UserName}})
+	http.PostForm(apiUrl, url.Values{"uid": {msg.Text}, "display_name": {displayName}})
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "trying to call device with id "+msg.Text)
 }
