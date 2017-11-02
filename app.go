@@ -70,8 +70,7 @@ func (a *App) handleCall(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error decoding")
 	}
 
-	resp, err := http.PostForm("https://sentinel-api.herokuapp.com/api/v1/users",
-		url.Values{})
+	resp, err := http.Get("https://sentinel-api.herokuapp.com/api/v1/users")
 
 	var users []user
 	if err != nil {
