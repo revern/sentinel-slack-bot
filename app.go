@@ -213,7 +213,7 @@ func (a *App) deleteDevice(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	} else {
-		postSlackMessage("Device < " + msg.Text + " > was returned to Box")
+		postSlackMessage("Device < " + msg.Text + " > was removed and now not using")
 	}
 
 	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
