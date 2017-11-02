@@ -19,6 +19,7 @@ import (
 type App struct {
 	Router *mux.Router
 	DB     *sql.DB
+	Cr     *cron.Cron
 }
 
 func (a *App) Initialize(dbUrl string) {
@@ -38,8 +39,8 @@ func (a *App) Initialize(dbUrl string) {
 		`"location_id" varchar(50) NOT NULL,` +
 		`"location" varchar(50) NOT NULL);`)
 
-	c := cron.New()
-	c.AddFunc("0 37 7 * * *", func() { a.remindToReturnDevices() })
+	a.Cr = cron.New()
+	a.Cr.AddFunc("0 43 7 * * *", func() { a.remindToReturnDevices() })
 
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
@@ -62,7 +63,7 @@ func (a *App) initializeRoutes() {
 
 func (a *App) getTime(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, strconv.Itoa(time.Now().Hour()) + " : " + strconv.Itoa(time.Now().Minute()))
+	fmt.Fprint(w, strconv.Itoa(time.Now().Hour())+" : "+strconv.Itoa(time.Now().Minute()))
 }
 
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +94,7 @@ func (a *App) remindToReturnDevices() {
 	slack_msg := ""
 	for i := 0; i < len(devices); i++ {
 		if devices[i].Location != "box" {
-			slack_msg +=  "<@" + devices[i].LocationID + "> please don't forget return < "+ devices[i].Name+ " > to the box\n"
+			slack_msg += "<@" + devices[i].LocationID + "> please don't forget return < " + devices[i].Name + " > to the box\n"
 		}
 	}
 	postSlackMessage(slack_msg)
@@ -136,7 +137,7 @@ func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	postSlackMessage("<@"+ msg.UserId +"> returned " + d.Name)
+	postSlackMessage("<@" + msg.UserId + "> returned " + d.Name)
 
 	//respondWithJSON(w, http.StatusOK, d)
 }
