@@ -98,8 +98,8 @@ func (a *App) handleCall(w http.ResponseWriter, r *http.Request) {
 		displayName = msg.UserName
 	}
 
-	apiUrl := "https://sentinel-api.herokuapp.com/api/v1/devices/call"
-	http.PostForm(apiUrl, url.Values{"uid": {msg.Text}, "display_name": {displayName}})
+	apiUrl := "https://sentinel-api.herokuapp.com/api/v1/devices/call_by_iid"
+	http.PostForm(apiUrl, url.Values{"iid": {msg.Text}, "display_name": {displayName}})
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "trying to call device with id "+msg.Text)
 }
