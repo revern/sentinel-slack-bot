@@ -155,7 +155,7 @@ func (a *App) addDevice(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	} else {
-		fmt.Fprint(w, "New device < "+msg.Text+" > was added to collection")
+		postSlackMessage("New device < "+msg.Text+" > was added to collection")
 	}
 	//respondWithJSON(w, http.StatusCreated, d)
 }
@@ -171,7 +171,7 @@ func (a *App) deleteDevice(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	} else {
-		fmt.Fprint(w, "Device < "+msg.Text+" > was returned to Box")
+		postSlackMessage("Device < "+msg.Text+" > was returned to Box")
 	}
 
 	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
