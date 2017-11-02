@@ -13,6 +13,7 @@ import (
 	"bytes"
 	"github.com/robfig/cron"
 	"time"
+	"strconv"
 )
 
 type App struct {
@@ -61,7 +62,7 @@ func (a *App) initializeRoutes() {
 
 func (a *App) getTime(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, string(time.Now().Hour()) + " : " + string(time.Now().Minute()))
+	fmt.Fprint(w, strconv.Itoa(time.Now().Hour()) + " : " + strconv.Itoa(time.Now().Minute()))
 }
 
 func (a *App) getDevices(w http.ResponseWriter, r *http.Request) {
