@@ -62,6 +62,7 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) getTime(w http.ResponseWriter, r *http.Request) {
+	a.remindToReturnDevices()
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, strconv.Itoa(time.Now().Hour())+" : "+strconv.Itoa(time.Now().Minute()))
 }
