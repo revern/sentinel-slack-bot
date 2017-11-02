@@ -80,7 +80,7 @@ func (a *App) handleCall(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(resp.Body)
 		if err := decoder.Decode(&users); err != nil {
 			//respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-			return
+			//return
 		}
 		defer r.Body.Close()
 
