@@ -40,7 +40,7 @@ func (a *App) Initialize(dbUrl string) {
 		`"location" varchar(50) NOT NULL);`)
 
 	a.Cr = cron.New()
-	a.Cr.AddFunc("0 2 8 * * *", func() { a.remindToReturnDevices() })
+	a.Cr.AddFunc("0 45 16 * * *", func() { a.remindToReturnDevices() })
 	a.Cr.Start()
 
 	a.Router = mux.NewRouter()
@@ -63,7 +63,6 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) getTime(w http.ResponseWriter, r *http.Request) {
-	a.remindToReturnDevices()
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, strconv.Itoa(time.Now().Hour())+" : "+strconv.Itoa(time.Now().Minute()))
 }
