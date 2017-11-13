@@ -24,11 +24,6 @@ type App struct {
 }
 
 func (a *App) Initialize(dbUrl string) {
-	//connectionString :=
-	//	fmt.Sprintf("user=%s password=%s dbname=%s", user, password, dbname)
-
-	//connection, _ := pq.ParseURL(dbUrl)
-	//connection += " sslmode=require"
 	var err error
 	a.DB, err = sql.Open("postgres", dbUrl)
 	if err != nil {
@@ -41,7 +36,7 @@ func (a *App) Initialize(dbUrl string) {
 		`"location" varchar(50) NOT NULL);`)
 
 	a.Cr = cron.New()
-	a.Cr.AddFunc("0 45 16 * * *", func() { a.remindToReturnDevices() })
+	a.Cr.AddFunc("0 45 16 * * 0-4", func() { a.remindToReturnDevices() })
 	a.Cr.Start()
 
 	a.Router = mux.NewRouter()
@@ -74,15 +69,14 @@ func (a *App) handleCall(w http.ResponseWriter, r *http.Request) {
 
 	var users []user
 	if err != nil {
-		//respondWithError(w, http.StatusBadRequest, "invalid token")
+		respondWithError(w, http.StatusBadRequest, "invalid token")
 	} else {
 		decoder := json.NewDecoder(resp.Body)
 		if err := decoder.Decode(&users); err != nil {
-			//respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-			//return
+			respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+			return
 		}
 		defer r.Body.Close()
-
 	}
 
 	displayName := ""
@@ -159,9 +153,7 @@ func (a *App) takeDevice(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
 	postSlackMessage("<@" + d.LocationID + "> took " + d.Name)
-	//respondWithJSON(w, http.StatusOK, d)
 }
 
 func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
@@ -181,8 +173,6 @@ func (a *App) returnDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	postSlackMessage("<@" + msg.UserId + "> returned " + d.Name)
-
-	//respondWithJSON(w, http.StatusOK, d)
 }
 
 func (a *App) addDevice(w http.ResponseWriter, r *http.Request) {
@@ -196,10 +186,8 @@ func (a *App) addDevice(w http.ResponseWriter, r *http.Request) {
 	if err := d.createDevice(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
-	} else {
-		postSlackMessage("New device < " + msg.Text + " > was added to collection")
 	}
-	//respondWithJSON(w, http.StatusCreated, d)
+	postSlackMessage("New device < " + msg.Text + " > was added to collection")
 }
 
 func (a *App) deleteDevice(w http.ResponseWriter, r *http.Request) {
@@ -212,11 +200,8 @@ func (a *App) deleteDevice(w http.ResponseWriter, r *http.Request) {
 	if err := p.deleteDevice(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
-	} else {
-		postSlackMessage("Device < " + msg.Text + " > was removed and now not using")
 	}
-
-	//respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+	postSlackMessage("Device < " + msg.Text + " > was removed and now not using")
 }
 
 func (a *App) handleInfo(w http.ResponseWriter, r *http.Request) {
@@ -261,9 +246,8 @@ func getSlackMessage(r *http.Request) (*slack_message, error) {
 	if err != nil {
 		fmt.Println("Error decoding")
 		return nil, err
-	} else {
-		return msg, nil
 	}
+	return msg, nil
 }
 
 func postSlackMessage(message string) {
